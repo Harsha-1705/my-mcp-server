@@ -1,0 +1,35 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # Use Python 3.11\
+FROM python:3.11-slim\
+\
+# Install system dependencies for Playwright browsers\
+RUN apt-get update && apt-get install -y \\\
+    wget \\\
+    gnupg \\\
+    && rm -rf /var/lib/apt/lists/*\
+\
+# Set work directory\
+WORKDIR /app\
+\
+# Copy files\
+COPY requirements.txt .\
+COPY main.py .\
+\
+# Install Python dependencies\
+RUN pip install --no-cache-dir -r requirements.txt\
+\
+# Install Playwright browsers (Essential for the Scout Agent)\
+RUN playwright install --with-deps chromium\
+\
+# Expose the port Railway gives us\
+ENV PORT=8000\
+EXPOSE 8000\
+\
+# Run the server\
+CMD ["python", "main.py"]}
